@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% block main %}
+            <div class="card border-light mb-3">
+            <div class="card-body">
+                <h3 class="card-title">Comparision between complex and simple calculation</h3>
+                <a href="/calculation" class="btn btn-outline-primary btn-lg float-end">Back to input</a>
+                <table class="table table-striped w-auto">
+                    <thead>
+                        <tr>
+                            <th scope="col">Method</th>
+                            <th scope="col">Seconds</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Complex</td>
+                            <td>{{ "{:.6f}".format(complex_time) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Simple</td>
+                            <td>{{ "{:.6f}".format(simple_time) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="font-size: large; font-weight: bold;">
+                    The simple calculation is {{ "{:.1f}".format(efficiency) }} times faster
+                </div>
+                <h3 style="text-align: center;">Comparision summary per year</h3>
+                <a href="{{ url_for('download_report', report_type='summary') }}" class="float-end mb-3">Download to csv</a>
+                <table class="table table-striped">
+                    <thead style="text-align: right;">
+                        <tr>
+                            <th scope="col">Deal id</th>
+                            <th scope="col">Years</th>
+                            <th scope="col">Principal balance at year end</th>
+                            <th scope="col">Nominal interest rate at year end</th>
+                            <th scope="col">Complex effective interest</th>
+                            <th scope="col">Simple effective interest</th>
+                            <th scope="col">Complex EIR at year end</th>
+                            <th scope="col">Simple EIR at year end</th>
+                            <th scope="col">Absolute interest difference</th>
+                            <th scope="col">Relative interest difference</th>
+                            <th scope="col">EIR difference</th>
+                        </tr>
+                    </thead>
+                    <tbody  style="text-align: right;">
+                        {% for row in summary %}
+                            <tr>
+                                <td>{{ row["Deal id"] }}</td>
+                                <td>{{ row["Years"] }}</td>
+                                <td>{{ row["Principal balance"] | thousands }}</td>
+                                <td> {{ "{:.2f}%".format(row["Nominal interest rate"]) }}</td>
+                                <td>{{ row["Complex effective interest"] | thousands }}</td>
+                                <td>{{ row["Simple effective interest"] | thousands }}</td>
+                                <td> {{ "{:.2f}%".format(row["Complex EIR"]) }}</td>
+                                <td> {{ "{:.2f}%".format(row["Simple EIR"]) }}</td>
+                                <td>{{ row["Absolute int. diff"] | thousands }}</td>
+                                <td>{{ "{:.3f}%".format(row["Relative int. diff"]) }}</td>
+                                <td>{{ "{:.3f}%".format(row["EIR difference"]) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <h3 style="text-align: center;">Comparision per cash flow dates</h3>
+                <a href="{{ url_for('download_report', report_type='comparision') }}" class="float-end mb-3">Download to csv</a>
+                <table class="table table-striped">
+                    <thead style="text-align: right;">
+                        <tr>
+                            <th scope="col">Deal id</th>
+                            <th scope="col">Dates</th>
+                            <th scope="col">Principal balance</th>
+                            <th scope="col">Nominal interest rate</th>
+                            <th scope="col">Complex effective interest</th>
+                            <th scope="col">Simple effective interest</th>
+                            <th scope="col">Complex EIR</th>
+                            <th scope="col">Simple EIR</th>
+                            <th scope="col">Absolute interest difference</th>
+                            <th scope="col">Relative interest difference</th>
+                            <th scope="col">EIR difference</th>
+                        </tr>
+                    </thead>
+                    <tbody  style="text-align: right;">
+                        {% for row in schedule %}
+                            <tr>
+                                <td>{{ row["Deal id"] }}</td>
+                                <td style="white-space: nowrap;">{{ row["Dates"] }}</td>
+                                <td>{{ row["Principal balance"] | thousands }}</td>
+                                <td> {{ "{:.2f}%".format(row["Nominal interest rate"]) }}</td>
+                                <td>{{ row["Complex effective interest"] | thousands }}</td>
+                                <td>{{ row["Simple effective interest"] | thousands }}</td>
+                                <td> {{ "{:.2f}%".format(row["Complex EIR"]) }}</td>
+                                <td> {{ "{:.2f}%".format(row["Simple EIR"]) }}</td>
+                                <td>{{ row["Absolute int. diff"] | thousands }}</td>
+                                <td>{{ "{:.3f}%".format(row["Relative int. diff"]) }}</td>
+                                <td>{{ "{:.3f}%".format(row["EIR difference"]) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}

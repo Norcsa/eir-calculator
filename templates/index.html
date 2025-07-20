@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+        <body>
+            <div class="row g-4">
+                <div class="col-md-10">
+                    <div class="card border-light mb-3 h-100">
+                        <div class="card-header" style="font-size: 26px; ">How does it work?</div>
+                        <div class="card-body" style="text-align: justify; font-size: 18px;">
+                            <p class="card-text">This application supports the valuation of financial instruments at amortized cost by using the effective interest method. This calculation can be applied both in IFRS and US GAAP despite the slight differences in the relevant requirements.</p>
+                            <p class="card-text">Financial instruments are valued at fair value at initial recognition. For simplicity the difference between the fair value and the principal amount is referred to as “capitalized finance costs”, which typically include setup costs, and/or discount or premium. The formula to arrive at the amortised cost is the following:</p>
+                            <p class="card-text ms-4"><strong>Amortized cost</strong> = principal ± capitalized finance costs - repayments &mnplus; amortization of capitalised finance costs (potentially minus loss allowance in case of an asset).</p>
+                            <p class="card-text">From a technical accounting point of view, the purpose of the calculation is to determine the amortization schedule for the capitalized finance costs over the lifetime of the instrument (which can differ from the contractual terms in IFRS), since that is the only missing information from the formula above.</p>
+                            <p class="card-text ms-4"><strong>Amortization</strong> = effective interest - nominal(cash) interest</p>
+                            <p class="card-text ms-4"><strong>Effective interest</strong> = amortized cost at the end of the previous period * effective interest rate</p>
+                            <p class="card-text ms-4">The <strong>effective interest rate</strong> is the internal rate of return of all cash flows related to the instrument.</p>
+                            <p class="card-text">The capitalized finance cost is cash settled at inception, which means that it is not a monetary item, therefore it should not be retranslated to functional currency at the end of each period in case of a foreign currency instrument. (IAS 21: 16, 20, 21, 22, 23; ASC: 830-20-35) For that reason the entire calculation is performed in the functional currency of the entity, regardless of the currency of the instrument. The application assumes that all capitalized finance costs are settled on the start date. Allowing for individual settlement dates would not have a significant impact on the output.</p>
+                            <p class="card-text">The application can handle various day count conventions, interest frequencies, interest types and repayment structures. It can also accept multiple setup costs, in case they incur in different currencies. The date of the first interest payment is a required input to allow for stub periods. The effective interest rate itself is calculated by using the Actual/365F method for consistency. </p>
+                            <p class="card-text">For fixed instruments the calculation only needs to be performed once at inception. When the floating interest type is selected, interest rates can be provided for subsequent periods to allow the application to recalculate the effective interest based on the latest interest rate. For this purpose two methods are supported:</p>
+                            <p class="card-text ms-4"><strong>Complex:</strong> this is the version when the amortization schedule (and effective interest) is recalculated by basically repeating the same internal rate of return calculation as at inception starting from the current period. Although technically for foreign currency instruments the future cash flows should be retranslated to the exchange rate applicable at the date of the rate reset, the application keeps using the original exchange rate from inception. As mentioned above the purpose of the calculation is to schedule the amortization of capitalized finance costs - dispite it is commonly referred to as "EIR calculation" - and not to provide actual period end balances.</p>
+                            <p class="card-text ms-4"><strong>Simple:</strong> this version relies on rearranging the amortization formula as below:</p>
+                            <p class="card-text ms-4"><strong>Effective interest</strong> = nominal(cash) interest + amortization </p>
+                            <p class="card-text ms-4">In this case the amortization schedule remains unchanged from insception and only the nominal interest and the effective interest are updated. Again, technically the nominal interest should be retranslated by the exchange rate applicable at the rate reset date in case of a foreign currency instrument. </p>
+                            <p class="card-text">The application allows the user the compare the two types of calculation methods, which will show that there is minimal difference between the outcomes of the two, definitely way below typical materiality limits applied by entities. The output also measures the computation time for the two methods.</p>
+                            <p class="card-text">The purpose of the application is to prove that effective interest rate calculation does not need to be complicated and provide a simple solution for entities that do not have sophisticated software to produce the same output. I believe the simple method should be universally accepted so that accountants do not waste time on calculations that do not provide any additional information (basic accounting prinicples: materiality, cost benefit). Obviously it is not going to be able to cover all cases, but it is suitable for most. Since it does not check the current date, it can also be used for forecasting or simply simulation purposes. The resulting calculations can be downloaded into a csv file.</p>
+                            <p class="card-text">Input format should be 1,000.00 for numbers, althought the thousand separator and the decimals can be omited, and YYYY-MM-DD for dates.</p>
+                            <p class="card-text">The application does not save any data, all data is lost when the browser is closed.</p>
+                            <a href="/calculation" class="btn btn-outline-primary">Go to calculation</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card border-light mb-3 h-100">
+                        <img src="{{ url_for('static', filename='portrait.jpg') }}" class="card-img-top w-75" alt="profile picture">
+                        <div class="card-body" style="text-align: justify; font-size: 16px;">
+                            <h4 class="card-title">Contact</h4>
+                            <p class="card-text">I am Nóra Várhegyi, I have a masters degree in accounitng and I am an ACCA qualified accountant with 15+ years of accounting and treasury experience.</p>
+                            <p class="card-text">Most of my career I worked at FTSE250 companies in the UK, where I had the opportunity to gain experience in the UK financial markets and IFRS reporting practices.</p>
+                            <p class="card-text">I am passionate about process optimalization and improvement, while ensuring compliance in a practical way.</p>
+                            <p class="card-text">Feel free to reach out if you have any questions at:</p>
+                            <p class="card-text">
+                                <a href="mailto:norcsa.varhegyi@gmail.com">norcsa.varhegyi@gmail.com</a>
+                            </p>
+                        </div>
+                    </div>       
+                </div>        
+            </div>
+        </body>
+{% endblock %}

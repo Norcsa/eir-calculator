@@ -1,0 +1,243 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <form action="/calculation" method="POST">
+        <div class="container-fluid text-end">
+            <div class="row row-cols-auto">
+                <div class="col-4 col-md-2">
+                    <label for="functional_ccy" class="col-form-label">Functional Currency</label>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <input autocomplete="off" autofocus type="text" id="functional_ccy" name="functional_ccy" class="form-control" maxlength="3" pattern="[A-Za-z]{3}" required>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <label for="deal_id" class="col-form-label">Deal id</label>
+                </div>
+                <div class="col-auto">
+                    <input autocomplete="off" autofocus type="text" id="deal_id" name="deal_id" class="form-control">
+                </div>
+            </div>
+            <div class="row row-cols-auto">
+                <div class="co-4 col-sm-2">
+                    <label for="principal_amount" class="col-form-label">Principal Amount</label>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <input autocomplete="off" type="text" id="principal_amount" name="principal_amount" class="form-control" step="any" required>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <label for="deal_ccy" class="col-form-label">Currency</label>
+                </div>
+                <div class="col-auto">
+                    <input autocomplete="off" type="text" id="deal_ccy" name="deal_ccy" class="form-control" maxlength="3" pattern="[A-Za-z]{3}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="deal_fx_rate" class="col-form-label">Exchange rate</label>
+                </div>
+                <div class="col-auto">
+                    <input autocomplete="off" type="number" id="deal_fx_rate" name="deal_fx_rate" class="form-control" placeholder="1" step="any">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 col-sm-2">
+                    <label for="discount" class="col-form-label">Discount (%)</label>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <input autocomplete="off" type="number" id="discount" name="discount" class="form-control" step="any">
+                </div>
+                <div class="col-4 col-sm-2">
+                    <label for="premium" class="col-form-label"> or Premium (%)</label>
+                </div>
+                <div class="col-auto">
+                    <input autocomplete="off" type="number" id="premium" name="premium" class="form-control" step="any">
+                </div>
+            </div>
+            <div id="setup-costs-container">
+                <div class="row setup-cost-row">
+                    <div class="col-4 col-sm-2">
+                        <label for="setup_costs" class="col-form-label">Setup Costs</label>
+                    </div>
+                    <div class="col-4 col-sm-2">
+                        <input autocomplete="off" type="text" id="setup_costs" name="setup_cost_amount" class="form-control setup-cost-amount" step="any">
+                    </div>
+                    <div class="col-4 col-sm-2">
+                        <label for="setupcosts_ccy" class="col-form-label">Currency</label>
+                    </div>
+                    <div class="col-auto">
+                        <input autocomplete="off" type="text" id="setupcosts_ccy" name="setupcosts_ccy" class="form-control" maxlength="3" pattern="[A-Za-z]{3}">
+                    </div>
+                    <div class="col-auto">
+                        <label for="setupcost_fx_rate" class="col-form-label">Exchange rate</label>
+                    </div>
+                    <div class="col-auto">
+                        <input autocomplete="off" type="number" id="setupcost_fx_rate" name="setup_cost_fx" class="form-control setup-cost-fx" placeholder="1" step="any">
+                    </div>
+                    <div class="col-auto d-flex align-items-end">
+                        <button type="button" class="btn btn-outline-secondary" id="add-setup-cost-btn">Add more</button>
+                       
+                    </div>            
+                </div>
+            </div>
+            <div>
+                <input type="hidden" name="setup_costs_total" id="setup_costs_total">
+            </div>            
+            <div class="row">
+                <div class="col-4 col-sm-2">
+                    <label for="start_date" class="col-form-label">Start Date(YYYY-MM-DD)</label>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <input autocomplete="off" type="text" id="start_date" name="start_date" class="form-control" required>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <label for="end_date" class="col-form-label">End Date(YYYY-MM-DD)</label>
+                </div>
+                <div class="col-auto">
+                    <input autocomplete="off" type="text" id="end_date" name="end_date" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 col-sm-2">
+                    <label for="first_interest_date" class="col-form-label">First Interest Payment Date</label>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <input autocomplete="off" type="text" id="first_interest_date" name="first_interest_date" class="form-control" required>
+                </div>
+                <div class="col-4 col-sm-2">
+                    <label for="interest_rate" class="col-form-label">Interest Rate (%)</label>
+                </div>
+                <div class="col-auto">
+                    <input autocomplete="off" type="number" id="interest_rate" name="interest_rate" class="form-control" step="any" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 text-end pt-0">Structure</label>
+                <div class="col-sm-10 text-start">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="structure" id="bullet" value="bullet" checked>
+                        <label class="form-check-label" for="bullet">
+                            Bullet
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="structure" id="amortizing" value="amortizing">
+                        <label class="form-check-label" for="amortizing">
+                            Amortizing
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 text-end col-form-label pt-0">Interest frequency</label>
+                <div class="col-sm-10 text-start">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="interest_freq" id="monthly" value="monthly" checked>
+                        <label class="form-check-label" for="monthly">
+                            Monthly
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="interest_freq" id="quarterly" value="quarterly">
+                        <label class="form-check-label" for="quarterly">
+                            Quarterly
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="interest_freq" id="semi_annual" value="semi_annual">
+                        <label class="form-check-label" for="semi_annual">
+                            Semi-Annual
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="interest_freq" id="annual" value="annual">
+                        <label class="form-check-label" for="annual">
+                            Annual
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 text-end col-form-label pt-0">Day Count</label>
+                <div class="col-sm-10 text-start">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="daycount" id="actual_actual" value="actual_actual" checked>
+                        <label class="form-check-label" for="actual_actual">
+                            Actual/Actual
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="daycount" id="actual_365" value="actual_365">
+                        <label class="form-check-label" for="actual_365">
+                            Actual/365
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="daycount" id="actual_360" value="actual_360">
+                        <label class="form-check-label" for="actual_360">
+                            Actual/360
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="daycount" id="thirty_360" value="thirty_360">
+                        <label class="form-check-label" for="thirty_360">
+                            30/360
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 text-end col-form-label pt-0">Interest type</label>
+                <div class="col-sm-10 text-start">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="interest_type" id="fixed" value="fixed" checked>
+                        <label class="form-check-label" for="fixed">
+                            Fixed
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="interest_type" id="floating" value="floating">
+                        <label class="form-check-label" for="floating">
+                            Floating
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div id="floating-interest-section" style="display: none;">
+                <div id="interest-rate-container">
+                    <div class="row mb-2 interest-rate-row">
+                        <div class="col-4 col-sm-2">
+                            <label for="interest_date" class="col-form-label">Interest Payment Date</label>
+                        </div>
+                        <div class="col-4 col-sm-2">
+                            <input autocomplete="off" type="text"  name="interest_date[]" class="form-control interest-date">
+                        </div>
+                        <div class="col-4 col-sm-2">
+                            <label for="interest_rate" class="col-form-label">Interest Rate (%)</label>
+                        </div>
+                        <div class="col-4 col-sm-2">
+                            <input autocomplete="off" type="text"  name="interest_rate[]" class="form-control interest-rate">
+                        </div>
+                        <div class="col-4 col-sm-2">
+                            <button type="button" class="btn btn-outline-secondary" id="add-interest-rate-btn">Add interest rate</button>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-center">
+                <button class="btn btn-outline-primary btn-lg mx-2" type="submit" name="action" value="simple_eir_calculation">Calculate simple schedule</button>
+                <button class="btn btn-outline-primary btn-lg mx-2" type="submit" name="action" value="complex_eir_calculation">Calculate complex schedule</button>
+                <button class="btn btn-outline-primary btn-lg mx-2" type="submit" name="action" value="comparision">Comparision</button>
+            </div>  
+        </div>             
+    </form>
+{% endblock %}
+<script src="{{ url_for('static', filename='js/calculation.js') }}"></script>

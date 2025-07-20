@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block main %}
+            <div class="card border-light mb-3">
+            <div class="card-body">
+                <h3 class="card-title">Effective interest/amortization schedule</h3>
+                <div class="d-flex flex-column align-items-end mb-3">
+                    <a href="/calculation" class="btn btn-primary mb-2">Back to input</a>
+                    <a href="{{ url_for('download_report', report_type='report') }}">Download to csv</a>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Deal id</th>
+                            <th scope="col">Dates</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Principal balance</th>
+                            <th scope="col">Nominal interest rate</th>
+                            <th scope="col">Nominal interest</th>
+                            <th scope="col">Total cash flow</th>
+                            <th scope="col">Capitalized finance costs</th>
+                            <th scope="col">Amortized cost</th>
+                            <th scope="col">Effective interest</th>
+                            <th scope="col">Amortization schedule</th>
+                            <th scope="col">Effective interest rate</th>
+                        </tr>
+                    </thead>
+                    <tbody  style="text-align: right;">
+                        {% for row in schedule %}
+                            <tr>
+                                <td>{{ row["Deal id"] }}</td>
+                                <td style="white-space: nowrap;">{{ row["Dates"] }}</td>
+                                <td>{{ row["Currency"] }}</td>
+                                <td>{{ row["Principal balance"] | thousands }}</td>
+                                <td> {% if row["Nominal interest rate"] != "" %}
+                                        {{ "{:.2f}%".format(row["Nominal interest rate"]) }}
+                                      {% else %}
+                                        
+                                      {% endif %}</td>
+                                <td>{{ row["Nominal interest"] | thousands }}</td>
+                                <td>{{ row["Total cash flow"] | thousands }}</td>
+                                <td>{{ row["Capitalized finance costs"] | thousands }}</td>
+                                <td>{{ row["Amortized cost"] | thousands }}</td>
+                                <td>{{ row["Effective interest"] | thousands }}</td>
+                                <td>{{ row["Amortization schedule"] | thousands }}</td>
+                                <td>  {% if row["Effective interest rate"] != "" %}
+                                        {{ "{:.2f}%".format(row["Effective interest rate"]) }}
+                                      {% else %}
+                                        
+                                      {% endif %}
+                                    </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}
