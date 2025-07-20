@@ -119,7 +119,7 @@ def calculation():
             )
             for line in interest_dict:
                 if line["date"] not in dates:
-                    raise ValueError(f"Date is not valid: {line["date"]}")
+                    raise ValueError(f"Date is not valid: {line['date']}")
 
 
             """These conditions operate the buttons"""
