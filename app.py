@@ -123,8 +123,9 @@ def calculation():
 
 
             """These conditions operate the buttons"""
+            action = request.form["action"]
 
-            if request.form["action"] == "comparision":
+            if action == "comparision":
                 schedule, summary, complex_time, simple_time, efficiency = comparision(
                     DEAL, interest_dict
                 )
@@ -138,9 +139,9 @@ def calculation():
                     simple_time=simple_time,
                     efficiency=efficiency,
                 )
-            elif request.form["action"] == "simple_eir_calculation":
+            elif action == "simple_eir_calculation":
                 schedule, _, _ = simple_eir_calculation(DEAL, interest_dict)
-            elif request.form["action"] == "complex_eir_calculation":
+            elif action == "complex_eir_calculation":
                 schedule = complex_eir_calculation(DEAL, interest_dict)
             session["schedule"] = schedule
             return render_template("report.html", schedule=schedule)
