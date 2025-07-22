@@ -43,6 +43,13 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
+@app.before_request
+def before_request():
+    if not request.is_secure and not app.debug:
+        url = request.url.replace("http://", "https://", 1)
+        return redirect(url, code=301)
+    
+
 @app.after_request
 def after_request(response):
     """Ensure responses are not cashed"""
