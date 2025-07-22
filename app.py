@@ -35,9 +35,28 @@ from get_data import (
     update_deal_data,
 )
 
+from flask_talisman import Talisman
+
+csp = {
+    'default-src': [
+        '\'self\'',
+        'https://cdn.jsdelivr.net',
+    ],
+    'script-src': [
+        '\'self\'',
+        'https://cdn.jsdelivr.net',
+    ],
+    'style-src': [
+        '\'self\'',
+        'https://cdn.jsdelivr.net',
+    ],
+}
+
+
 # Configure application
 app = Flask(__name__)
-Talisman(app)
+Talisman(app, content_security_policy=csp)
+
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
