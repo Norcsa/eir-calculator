@@ -9,6 +9,7 @@ from flask import (
     url_for,
 )
 from flask_session import Session
+from flask_talisman import Talisman
 import io
 import pandas as pd
 
@@ -36,6 +37,7 @@ from get_data import (
 
 # Configure application
 app = Flask(__name__)
+Talisman(app)
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
