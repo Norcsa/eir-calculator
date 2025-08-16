@@ -331,6 +331,17 @@ def comparision(d: dict, interest_dict: list) -> tuple[list, float, float, float
         {"Year": year, "Last date": last_date_in_year[year]} for year in last_date_in_year
     ]
 
+    """
+    As the report shows figures on a cash flow basis, if there is no interest cash flow in the first year
+    the zero interests and the first year is being removed. It also avoids the zero division error.
+    """
+    if simple_effective_interest[0] == 0:
+        simple_effective_interest.pop(0)
+        complex_effective_interest.pop(0)
+        last_dates.pop(0)
+        years.pop(0)
+
+
     last_simple_eir = list()
     last_complex_eir = list()
     last_principal = list()
